@@ -1,0 +1,173 @@
+        static void Main(string[] args)
+        {
+            string[] fullName = { };
+            string[] occupation = { };
+            bool isWorking = true; // а ещё блядский выход сука что с ним сделать я не догоняю.
+            int task;
+            Console.WriteLine("Добро пожаловать в базу данных! Помни солнце ещё не село воин, проверяй всё, работай и удачи.");
+
+            while (isWorking)
+            {
+                int addDossier = 1, showDossier = 2, deleteDossier = 3, searchDossier = 4, exitMenu = 5;
+                Console.WriteLine($"Введите {addDossier}, чтобы добавить досье;");
+                Console.WriteLine($"Введите {showDossier}, чтобы вывести все досье в базе данных;");
+                Console.WriteLine($"Введите {deleteDossier}, чтобы удалить досье;");
+                Console.WriteLine($"Введите {searchDossier}, чтобы совершить поиск по фамилии;");
+                Console.WriteLine($"Введите {exitMenu}, чтобы выйти из базы данных.");   
+                task = Convert.ToInt32(Console.ReadLine());
+
+                if (task == addDossier)  // я понимаю что я должен обозначить их InputAddingInfo как то иначе но я не догняю как напишу ввод информации опять пизда его не устрит 
+                {
+                    InputAddingInfo(ref fullName, ref occupation);  //Ввод Добавляющей информации 
+                }
+                else if (task == showDossier)
+                {
+                    ShowInfo(fullName, occupation); //Показать информацию
+                }
+                else if (task == deleteDossier)
+                {
+                    InputRemovingInfo(ref fullName, ref occupation); //Ввод информации о перемещении
+                }
+                else if (task == searchDossier)
+                {
+                    InputFindInfo(fullName, occupation);  //Ввод информации для поиска
+                }
+                else if (task == exitMenu)
+                {
+                    Exit(isWorking = false); // блядский выход
+                }
+                else
+                {
+                    Console.WriteLine("Неверная команда.");
+                }
+
+            }
+        }
+
+        static string[] AddInfo(string[] info, string newInfo)
+        {
+            string[] tempArray = new string[info.Length + 1];
+
+            for (int i = 0; i < info.Length; i++)
+            {
+                tempArray[i] = info[i];
+            }
+
+            info = tempArray;
+            info[info.Length - 1] = newInfo;
+            return info;
+        }
+
+        static void InputAddingInfo(ref string[] fullName, ref string[] occupation)
+        {
+            string newFullName;
+            string newOccupation;
+
+            Console.Clear();
+            Console.WriteLine("Введите ФИО сотрудника: ");
+            newFullName = Console.ReadLine();
+            fullName = AddInfo(fullName, newFullName);
+            Console.WriteLine("Введите должность сотрудника: ");
+            newOccupation = Console.ReadLine();
+            occupation = AddInfo(occupation, newOccupation);
+            Console.WriteLine("Досье добавлено! Нажмите любую кнопку, чтобы продолжить.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static void ShowInfo(string[] fullName, string[] occupation)
+        {
+            Console.Clear();
+            int personNumber = 0;
+
+            for (int i = 0; i < fullName.Length; i++)
+            {
+                personNumber++;
+                Console.WriteLine($"{personNumber}. {fullName[i]} - {occupation[i]};");
+            }
+
+            Console.WriteLine("Это вся имеющаяся информация о сотрудниках в базе данных.");
+            Console.WriteLine("Нажмите любую клавишу, чтобы продолжить.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static string[] RemoveInfo(string[] info, int removeIndex)
+        {
+            string[] tempArray = new string[info.Length - 1];
+
+            for (int i = 0; i < removeIndex; i++)
+            {
+                tempArray[i] = info[i];
+            }
+
+            for (int i = removeIndex; i < tempArray.Length; i++)
+            {
+                tempArray[i] = info[i + 1];
+            }
+
+            info = tempArray;
+            return info;
+        }
+
+        static void InputRemovingInfo(ref string[] fullName, ref string[] occupation)
+        {
+            int removeIndex;
+
+            Console.Clear();
+            Console.WriteLine("Введите номер досье, который хотите удалить.");
+            removeIndex = Convert.ToInt32(Console.ReadLine()) - 1; // и тут что я должен сделать Convert.ToInt32(Console.ReadLine()); - запишите в 1 строку, сразу проинициализируйте. Не нужно объявлять отдельно
+            fullName = RemoveInfo(fullName, removeIndex);
+            occupation = RemoveInfo(occupation, removeIndex);
+            Console.WriteLine("Досье было удалено! Нажмите любую кнопку, чтобы продолжить.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+
+        static void FindInfo(string[] fullName, string[] occupation, string findInfo)
+        {
+            int personNumber = 0;
+            bool wasFound = false;
+            string foundFullName;
+
+            for (int i = 0; i < fullName.Length; i++)
+            {
+                personNumber++;
+
+                if (fullName[i].ToLower() == findInfo.ToLower())
+                {
+                    string foundOccupation = occupation[i];
+                    foundFullName = fullName[i];
+                    Console.WriteLine("Доступна следующая информация:");
+                    Console.WriteLine($"Сотрудник {foundFullName} находится в базе данных под номером {personNumber} и занимает должность {foundOccupation}.");
+                    wasFound = true;
+                }
+            }
+
+            if (wasFound == false)
+            {
+                Console.WriteLine("Запрашиваемая информация отсутствует в базе данных.");
+            }
+        }
+
+        static void InputFindInfo(string[] fullName, string[] occupation)
+        {
+            string findInfo;
+
+            Console.Clear();
+            Console.WriteLine("Введите ФИО сотрудника, досье которого хотите найти.");
+            findInfo = Console.ReadLine();
+            FindInfo(fullName, occupation, findInfo);
+            Console.WriteLine("Нажмите любую кнопку, чтобы продолжить.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        static bool Exit(bool isWorking)
+        {
+            Console.Clear();
+            Console.WriteLine("Работа программы завершена!");
+            return isWorking;
+        }
+    }
